@@ -8,7 +8,7 @@ import os.path
 import json
 import jsonpatch
 import argparse
-
+import dpath
 
 parser = argparse.ArgumentParser(description='Diff two JSON files')
 parser.add_argument('FILE1', type=argparse.FileType('r'))
@@ -32,6 +32,13 @@ def diff_files():
     doc1 = json.load(args.FILE1)
     doc2 = json.load(args.FILE2)
     patch = jsonpatch.make_patch(doc1, doc2)
+    j=0
+    for i in patch:
+	if i['op'] == 'replace':
+		patch.patch[j]['original_value']=dpath.util.get(doc1, i['path'])
+		patch.patch[j]['new_value']=patch.patch[j]['value']
+		del patch.patch[j]['value']
+	j=j+1
     print(json.dumps(patch.patch, indent=args.indent))
 
 

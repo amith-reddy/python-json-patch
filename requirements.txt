@@ -1,1 +1,2 @@
 jsonpointer>=1.9
+dpath>=1.4.0
